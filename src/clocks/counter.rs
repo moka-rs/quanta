@@ -1,14 +1,14 @@
 #[derive(Clone, Debug, Default)]
 pub struct Counter;
 
-#[cfg(all(target_arch = "x86_64", target_feature = "sse2"))]
+#[cfg(all(target_arch = "x86_64", target_feature = "sse2", not(miri)))]
 impl Counter {
     pub fn now(&self) -> u64 {
         unsafe { ::core::arch::x86_64::_rdtsc() }
     }
 }
 
-#[cfg(target_arch = "aarch64")]
+#[cfg(all(target_arch = "aarch64", not(miri)))]
 impl Counter {
     pub fn now(&self) -> u64 {
         let count: u64;
@@ -22,8 +22,8 @@ impl Counter {
 }
 
 #[cfg(not(any(
-    all(target_arch = "x86_64", target_feature = "sse2"),
-    target_arch = "aarch64",
+    all(target_arch = "x86_64", target_feature = "sse2", not(miri)),
+    all(target_arch = "aarch64", not(miri))
 )))]
 impl Counter {
     pub fn now(&self) -> u64 {

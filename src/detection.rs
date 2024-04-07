@@ -1,5 +1,5 @@
 #[allow(dead_code)]
-#[cfg(all(target_arch = "x86_64", target_feature = "sse2"))]
+#[cfg(all(target_arch = "x86_64", target_feature = "sse2", not(miri)))]
 pub fn has_counter_support() -> bool {
     let cpuid = raw_cpuid::CpuId::new();
     let has_invariant_tsc = cpuid
@@ -12,7 +12,7 @@ pub fn has_counter_support() -> bool {
     has_invariant_tsc && has_rdtscp
 }
 
-#[cfg(target_arch = "aarch64")]
+#[cfg(all(target_arch = "aarch64", not(miri)))]
 pub fn has_counter_support() -> bool {
     // AArch64 implies ARMv8 or above, where the system counter is always present.
     true
@@ -20,8 +20,8 @@ pub fn has_counter_support() -> bool {
 
 #[allow(dead_code)]
 #[cfg(not(any(
-    all(target_arch = "x86_64", target_feature = "sse2"),
-    target_arch = "aarch64",
+    all(target_arch = "x86_64", target_feature = "sse2", not(miri)),
+    all(target_arch = "aarch64", not(miri))
 )))]
 pub fn has_counter_support() -> bool {
     false

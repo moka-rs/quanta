@@ -602,6 +602,7 @@ pub mod tests {
         wasm_bindgen_test::wasm_bindgen_test
     )]
 
+    #[cfg_attr(miri, ignore)]
     fn test_reference_source_calibration() {
         let mut clock = Clock::new();
         let reference = Monotonic::default();
@@ -688,6 +689,8 @@ pub mod tests {
         all(target_arch = "wasm32", target_os = "unknown"),
         wasm_bindgen_test::wasm_bindgen_test
     )]
+
+    #[cfg_attr(miri, ignore)]
     fn measure_source_reference_self_timing() {
         let source = Counter::default();
         let reference = Monotonic::default();
